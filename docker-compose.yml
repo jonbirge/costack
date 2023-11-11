@@ -13,7 +13,8 @@ services:
       - "28080:8080"  # internal
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./dynamic-config.yml:/etc/traefik/dynamic-config.yml
       - ./certs:/letsencrypt
 
   whoami:
@@ -23,6 +24,8 @@ services:
       - "traefik.http.middlewares.strip-who.stripprefix.prefixes=/who"
       - "traefik.http.routers.whoami.middlewares=strip-who"
       - "traefik.http.routers.whoami.tls.certresolver=stackresolver"
+      - "traefik.http.middlewares.torblocker.plugin.torblock.enabled=true"
+      - "traefik.http.routers.whoami.middlewares=torblocker"
 
   db:
     image: mysql
@@ -43,55 +46,54 @@ services:
       - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
       - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
       - "traefik.port=8080"
-      - "traefik.http.routers.adminer.middlewares.torblocker"
     depends_on:
       - db
 
-  wordpress:
-    image: wordpress
-    restart: always
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: $SQL_USER
-      WORDPRESS_DB_PASSWORD: $SQL_PASS
-      WORDPRESS_DB_NAME: wordpress_db
-    volumes:
-      - ./wordpress:/var/www/html
-    labels:
-      - "traefik.http.routers.wordpress.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
-      - "traefik.http.routers.wordpress.tls.certresolver=stackresolver"
-    depends_on:
-      - db
+  # wordpress:
+  #   image: wordpress
+  #   restart: always
+  #   environment:
+  #     WORDPRESS_DB_HOST: db
+  #     WORDPRESS_DB_USER: $SQL_USER
+  #     WORDPRESS_DB_PASSWORD: $SQL_PASS
+  #     WORDPRESS_DB_NAME: wordpress_db
+  #   volumes:
+  #     - ./wordpress:/var/www/html
+  #   labels:
+  #     - "traefik.http.routers.wordpress.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
+  #     - "traefik.http.routers.wordpress.tls.certresolver=stackresolver"
+  #   depends_on:
+  #     - db
 
-  guacd:
-    image: guacamole/guacd
-    restart: always
+  # guacd:
+  #   image: guacamole/guacd
+  #   restart: always
 
-  guacamole:
-    image: guacamole/guacamole
-    restart: always
-    volumes:
-      - /config
-    environment:
-      TOTP_ENABLED: "true"
-      MYSQL_HOSTNAME: db
-      MYSQL_SSL_MODE: disabled
-      MYSQL_DATABASE: guacamole_db
-      MYSQL_USER: $SQL_USER
-      MYSQL_PASSWORD: $SQL_PASS
-      GUACAMOLE_HOME: /config
-      GUACD_HOSTNAME: guacd
-    labels:
-      - "traefik.http.routers.guacamole.rule=Host(`$HOSTNAME`) && PathPrefix(`/guacamole`)"
-      - "traefik.http.routers.guacamole.tls.certresolver=stackresolver"
-    depends_on:
-      - db
-      - guacd
+  # guacamole:
+  #   image: guacamole/guacamole
+  #   restart: always
+  #   volumes:
+  #     - /config
+  #   environment:
+  #     TOTP_ENABLED: "true"
+  #     MYSQL_HOSTNAME: db
+  #     MYSQL_SSL_MODE: disabled
+  #     MYSQL_DATABASE: guacamole_db
+  #     MYSQL_USER: $SQL_USER
+  #     MYSQL_PASSWORD: $SQL_PASS
+  #     GUACAMOLE_HOME: /config
+  #     GUACD_HOSTNAME: guacd
+  #   labels:
+  #     - "traefik.http.routers.guacamole.rule=Host(`$HOSTNAME`) && PathPrefix(`/guacamole`)"
+  #     - "traefik.http.routers.guacamole.tls.certresolver=stackresolver"
+  #   depends_on:
+  #     - db
+  #     - guacd
 
-  watchtower:
-    image: containrrr/watchtower
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 3600
+  # watchtower:
+  #   image: containrrr/watchtower
+  #   restart: always
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   command: --interval 3600
  

@@ -1,0 +1,10 @@
+# Traefik Dynamic Configuration
+
+# http:
+#   middlewares:
+#     torblocker:
+#       plugin:
+#         torblock:
+#           AddressListURL: https://check.torproject.org/exit-addresses
+#           Enabled: "true"
+#           UpdateInterval: "3600"

@@ -5,6 +5,8 @@ api:
 providers:
   docker:
     exposedByDefault: true
+  # file:
+  #   filename: "/etc/traefik/dynamic-config.yml"
 
 entryPoints:
   web:
@@ -30,12 +32,10 @@ certificatesResolvers:
 experimental:
   plugins:
     torblock:
-      moduleName: "github.com/jpxd/torblock"
-      version: "v0.1.1"
+      moduleName: github.com/jpxd/torblock
+      version: v0.1.1
 
-
-# Traefik Dynamic Configuration
-
+# Should eventually be dynamic...
 http:
   middlewares:
     torblocker:
