@@ -1,0 +1,104 @@
+version: "3"
+
+services:
+  reverse-proxy:
+    image: traefik:latest
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.birgeresolver.acme.email=$EMAIL"
+      - "--certificatesresolvers.birgeresolver.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.birgeresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.birgeresolver.acme.httpchallenge.entrypoint=web"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "28080:8080"  # internal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./certs:/letsencrypt
+
+  whoami:
+    image: traefik/whoami
+    labels:
+      - "traefik.http.routers.whoami.rule=Host(`$HOSTNAME`) && PathPrefix(`/who`)"
+      - "traefik.http.middlewares.strip-who.stripprefix.prefixes=/who"
+      - "traefik.http.routers.whoami.middlewares=strip-who"
+      - "traefik.http.routers.whoami.tls.certresolver=birgeresolver"
+
+  db:
+    image: mysql
+    restart: always
+    volumes:
+      - ./db:/var/lib/mysql
+    command:
+    #  - "--default-authentication-plugin=mysql_native_password"
+      - "--default-authentication-plugin=caching_sha2_password"
+    environment:
+      MYSQL_ROOT_PASSWORD: costackPASS
+      MYSQL_USER: sql_user
+      MYSQL_PASSWORD: sqlPASS
+
+  adminer:
+    image: adminer
+    restart: always
+    labels:
+      - "traefik.http.routers.adminer.rule=Host(`nyc.birgefuller.com`) && PathPrefix(`/adminer`)"
+      - "traefik.http.routers.adminer.tls.certresolver=birgeresolver"
+      - "traefik.port=8080"
+    depends_on:
+      - db
+
+  wordpress:
+    image: wordpress
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: costackPASS
+      WORDPRESS_DB_NAME: wordpress_db
+    volumes:
+      - ./wordpress:/var/www/html
+    labels:
+      - "traefik.http.routers.wordpress.rule=Host(`nyc.birgefuller.com`) && PathPrefix(`/`)"
+      - "traefik.http.routers.wordpress.tls.certresolver=birgeresolver"
+    depends_on:
+      - db
+
+  guacd:
+    image: guacamole/guacd
+    restart: always
+
+  guacamole:
+    image: guacamole/guacamole
+    restart: always
+    volumes:
+      - /config
+    environment:
+      TOTP_ENABLED: "true"
+      MYSQL_HOSTNAME: db
+      MYSQL_SSL_MODE: disabled
+      MYSQL_DATABASE: guacamole_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: costackPASS
+      GUACAMOLE_HOME: /config
+      GUACD_HOSTNAME: guacd
+    labels:
+      - "traefik.http.routers.guacamole.rule=Host(`nyc.birgefuller.com`) && PathPrefix(`/guacamole`)"
+      - "traefik.http.routers.guacamole.tls.certresolver=birgeresolver"
+    depends_on:
+      - db
+      - guacd
+
+  # watchtower:
+  #   image: containrrr/watchtower
+  #   restart: always
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   command: --interval 3600
+ 
