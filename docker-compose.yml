@@ -2,7 +2,7 @@ version: "3"
 
 services:
   reverse-proxy:
-    image: traefik:latest
+    image: traefik
     environment:
       - TRAEFIK_CONFIGFILE=/etc/traefik/traefik.yml
     command:
@@ -43,6 +43,7 @@ services:
       - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
       - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
       - "traefik.port=8080"
+      - "traefik.http.routers.adminer.middlewares.torblocker"
     depends_on:
       - db
 
@@ -62,35 +63,35 @@ services:
     depends_on:
       - db
 
-  # guacd:
-  #   image: guacamole/guacd
-  #   restart: always
+  guacd:
+    image: guacamole/guacd
+    restart: always
 
-  # guacamole:
-  #   image: guacamole/guacamole
-  #   restart: always
-  #   volumes:
-  #     - /config
-  #   environment:
-  #     TOTP_ENABLED: "true"
-  #     MYSQL_HOSTNAME: db
-  #     MYSQL_SSL_MODE: disabled
-  #     MYSQL_DATABASE: guacamole_db
-  #     MYSQL_USER: $SQL_USER
-  #     MYSQL_PASSWORD: $SQL_PASS
-  #     GUACAMOLE_HOME: /config
-  #     GUACD_HOSTNAME: guacd
-  #   labels:
-  #     - "traefik.http.routers.guacamole.rule=Host(`$HOSTNAME`) && PathPrefix(`/guacamole`)"
-  #     - "traefik.http.routers.guacamole.tls.certresolver=stackresolver"
-  #   depends_on:
-  #     - db
-  #     - guacd
+  guacamole:
+    image: guacamole/guacamole
+    restart: always
+    volumes:
+      - /config
+    environment:
+      TOTP_ENABLED: "true"
+      MYSQL_HOSTNAME: db
+      MYSQL_SSL_MODE: disabled
+      MYSQL_DATABASE: guacamole_db
+      MYSQL_USER: $SQL_USER
+      MYSQL_PASSWORD: $SQL_PASS
+      GUACAMOLE_HOME: /config
+      GUACD_HOSTNAME: guacd
+    labels:
+      - "traefik.http.routers.guacamole.rule=Host(`$HOSTNAME`) && PathPrefix(`/guacamole`)"
+      - "traefik.http.routers.guacamole.tls.certresolver=stackresolver"
+    depends_on:
+      - db
+      - guacd
 
-  # watchtower:
-  #   image: containrrr/watchtower
-  #   restart: always
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   command: --interval 3600
+  watchtower:
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 3600
  

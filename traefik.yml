@@ -27,20 +27,20 @@ certificatesResolvers:
       httpChallenge:
         entryPoint: websecure
 
-# experimental:
-#   plugins:
-#     torblock:
-#       moduleName: "github.com/jpxd/torblock"
-#       version: "v0.1.1"
+experimental:
+  plugins:
+    torblock:
+      moduleName: "github.com/jpxd/torblock"
+      version: "v0.1.1"
 
 
-# # Traefik Dynamic Configuration
+# Traefik Dynamic Configuration
 
-# http:
-#   middlewares:
-#     my-torblock:
-#       plugin:
-#         torblock:
-#           AddressListURL: https://check.torproject.org/exit-addresses
-#           Enabled: "true"
-#           UpdateInterval: "3600"
+http:
+  middlewares:
+    torblocker:
+      plugin:
+        torblock:
+          AddressListURL: https://check.torproject.org/exit-addresses
+          Enabled: "true"
+          UpdateInterval: "3600"
