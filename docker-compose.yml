@@ -3,24 +3,17 @@ version: "3"
 services:
   reverse-proxy:
     image: traefik:latest
+    environment:
+      - TRAEFIK_CONFIGFILE=/etc/traefik/traefik.yml
     command:
-      - "--api.insecure=true"
-      - "--providers.docker"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.stackresolver.acme.email=$EMAIL"
-      - "--certificatesresolvers.stackresolver.acme.storage=/letsencrypt/acme.json"
-      - "--certificatesresolvers.stackresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.stackresolver.acme.httpchallenge.entrypoint=web"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
     ports:
       - "80:80"
       - "443:443"
       - "28080:8080"  # internal
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yml:/etc/traefik/traefik.yml
       - ./certs:/letsencrypt
 
   whoami:
@@ -94,10 +87,10 @@ services:
   #     - db
   #     - guacd
 
-  watchtower:
-    image: containrrr/watchtower
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 3600
+  # watchtower:
+  #   image: containrrr/watchtower
+  #   restart: always
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   command: --interval 3600
  

@@ -1,6 +1,5 @@
 # TODO
 
-- Use .env for host and passwords
 - Switch to using YAML file to configure Traefik
 - Write script to initialize Guacamole db using guacamole container
 - Put Traefik dashboard on HTTPS port and protect with password

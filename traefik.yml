@@ -1,0 +1,46 @@
+# Traefik Static Configuration
+api:
+  insecure: true
+
+providers:
+  docker:
+    exposedByDefault: true
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+  websecure:
+    address: ":443"
+
+certificatesResolvers:
+  stackresolver:
+    acme:
+      storage: "/letsencrypt/acme.json"
+      email: "root@birgefuller.com"
+      tlsChallenge: true
+      httpChallenge:
+        entryPoint: websecure
+
+# experimental:
+#   plugins:
+#     torblock:
+#       moduleName: "github.com/jpxd/torblock"
+#       version: "v0.1.1"
+
+
+# # Traefik Dynamic Configuration
+
+# http:
+#   middlewares:
+#     my-torblock:
+#       plugin:
+#         torblock:
+#           AddressListURL: https://check.torproject.org/exit-addresses
+#           Enabled: "true"
+#           UpdateInterval: "3600"
