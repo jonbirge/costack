@@ -5,8 +5,8 @@ api:
 providers:
   docker:
     exposedByDefault: true
-  # file:
-  #   filename: "/etc/traefik/dynamic-config.yml"
+  file:
+    filename: "/etc/traefik/dynamic-config.yml"
 
 entryPoints:
   web:
@@ -34,13 +34,3 @@ experimental:
     torblock:
       moduleName: github.com/jpxd/torblock
       version: v0.1.1
-
-# Should eventually be dynamic...
-http:
-  middlewares:
-    torblocker:
-      plugin:
-        torblock:
-          AddressListURL: https://check.torproject.org/exit-addresses
-          Enabled: "true"
-          UpdateInterval: "3600"
