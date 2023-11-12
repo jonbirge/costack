@@ -11,10 +11,14 @@ services:
       - "80:80"
       - "443:443"
       - "28080:8080"  # internal
+    labels:
+      - "traefik.http.middlewares.geoblocker.plugin.geoblock.api=https://get.geojs.io/v1/ip/country/{ip}"
+      - "traefik.http.middlewares.geoblocker.plugin.geoblock.blackListMode=true"
+      - "traefik.http.middlewares.geoblocker.plugin.geoblock.cacheSize=16"
+      - "traefik.http.middlewares.geoblocker.plugin.geoblock.countries=CH,RU"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
-      - ./dynamic-config.yml:/etc/traefik/dynamic-config.yml
       - ./certs:/letsencrypt
 
   whoami:
@@ -22,10 +26,8 @@ services:
     labels:
       - "traefik.http.routers.whoami.rule=Host(`$HOSTNAME`) && PathPrefix(`/who`)"
       - "traefik.http.middlewares.strip-who.stripprefix.prefixes=/who"
-      - "traefik.http.routers.whoami.middlewares=strip-who"
       - "traefik.http.routers.whoami.tls.certresolver=stackresolver"
-      - "traefik.http.middlewares.torblocker.plugin.torblock.enabled=true"
-      - "traefik.http.routers.whoami.middlewares=torblocker"
+      - "traefik.http.routers.whoami.middlewares=geoblocker,strip-who"
 
   db:
     image: mysql
@@ -46,24 +48,25 @@ services:
       - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
       - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
       - "traefik.port=8080"
+      - "traefik.http.routers.adminer.middlewares=geoblocker"
     depends_on:
       - db
 
-  # wordpress:
-  #   image: wordpress
-  #   restart: always
-  #   environment:
-  #     WORDPRESS_DB_HOST: db
-  #     WORDPRESS_DB_USER: $SQL_USER
-  #     WORDPRESS_DB_PASSWORD: $SQL_PASS
-  #     WORDPRESS_DB_NAME: wordpress_db
-  #   volumes:
-  #     - ./wordpress:/var/www/html
-  #   labels:
-  #     - "traefik.http.routers.wordpress.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
-  #     - "traefik.http.routers.wordpress.tls.certresolver=stackresolver"
-  #   depends_on:
-  #     - db
+  wordpress:
+    image: wordpress
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: $SQL_USER
+      WORDPRESS_DB_PASSWORD: $SQL_PASS
+      WORDPRESS_DB_NAME: wordpress_db
+    volumes:
+      - ./wordpress:/var/www/html
+    labels:
+      - "traefik.http.routers.wordpress.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
+      - "traefik.http.routers.wordpress.tls.certresolver=stackresolver"
+    depends_on:
+      - db
 
   # guacd:
   #   image: guacamole/guacd
