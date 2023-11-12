@@ -1,6 +1,6 @@
 # TODO
 
-- Switch to using YAML file to configure Traefik
+- Get dynamic configuration working
 - Write script to initialize Guacamole db using guacamole container
 - Put Traefik dashboard on HTTPS port and protect with password
 - Use FastCGI version of WordPress and any other images that support it
