@@ -13,11 +13,15 @@ services:
       - "443:443"
       - "28080:8080"  # internal
     labels:  # should be in dynamic config file
-      - "traefik.http.middlewares.geoblocker.plugin.geoblock.api=https://get.geojs.io/v1/ip/country/{ip}"
-      - "traefik.http.middlewares.geoblocker.plugin.geoblock.blackListMode=false"
-      - "traefik.http.middlewares.geoblocker.plugin.geoblock.cacheSize=16"
-      - "traefik.http.middlewares.geoblocker.plugin.geoblock.countries=US"
-      - "traefik.http.routers.dashboard.middlewares=geoblocker"
+      - "traefik.http.middlewares.usonly.plugin.geoblock.api=https://get.geojs.io/v1/ip/country/{ip}"
+      - "traefik.http.middlewares.usonly.plugin.geoblock.blackListMode=false"
+      - "traefik.http.middlewares.usonly.plugin.geoblock.cacheSize=16"
+      - "traefik.http.middlewares.usonly.plugin.geoblock.countries=US"
+      - "traefik.http.middlewares.noruch.plugin.geoblock.api=https://get.geojs.io/v1/ip/country/{ip}"
+      - "traefik.http.middlewares.noruch.plugin.geoblock.blackListMode=true"
+      - "traefik.http.middlewares.noruch.plugin.geoblock.cacheSize=16"
+      - "traefik.http.middlewares.noruch.plugin.geoblock.countries=CH,RU"
+      - "traefik.http.routers.dashboard.middlewares=usonly"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
@@ -50,7 +54,7 @@ services:
       - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
       - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
       - "traefik.port=8080"
-      - "traefik.http.routers.adminer.middlewares=geoblocker"
+      - "traefik.http.routers.adminer.middlewares=usonly"
     depends_on:
       - db
 
@@ -67,6 +71,7 @@ services:
     labels:
       - "traefik.http.routers.wordpress.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
       - "traefik.http.routers.wordpress.tls.certresolver=stackresolver"
+      - "traefik.http.routers.wordpress.middlewares=noruch"
     depends_on:
       - db
 
@@ -91,7 +96,7 @@ services:
     labels:
       - "traefik.http.routers.guacamole.rule=Host(`$HOSTNAME`) && PathPrefix(`/guacamole`)"
       - "traefik.http.routers.guacamole.tls.certresolver=stackresolver"
-      - "traefik.http.routers.guacamole.middlewares=geoblocker"
+      - "traefik.http.routers.guacamole.middlewares=usonly"
     depends_on:
       - db
       - guacd
