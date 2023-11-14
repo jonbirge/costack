@@ -6,25 +6,17 @@ services:
     restart: always
     environment:
       - TRAEFIK_CONFIGFILE=/etc/traefik/traefik.yml
+      - TRAEFIK_PROVIDERS_FILE_FILENAME=/etc/traefik/dynamic_conf.yml
     command:
       - "--certificatesresolvers.stackresolver.acme.email=$EMAIL"
     ports:
       - "80:80"
       - "443:443"
-      - "28080:8080"  # internal
-    labels:  # should be in dynamic config file
-      - "traefik.http.middlewares.usonly.plugin.geoblock.api=https://get.geojs.io/v1/ip/country/{ip}"
-      - "traefik.http.middlewares.usonly.plugin.geoblock.blackListMode=false"
-      - "traefik.http.middlewares.usonly.plugin.geoblock.cacheSize=16"
-      - "traefik.http.middlewares.usonly.plugin.geoblock.countries=US"
-      - "traefik.http.middlewares.noruch.plugin.geoblock.api=https://get.geojs.io/v1/ip/country/{ip}"
-      - "traefik.http.middlewares.noruch.plugin.geoblock.blackListMode=true"
-      - "traefik.http.middlewares.noruch.plugin.geoblock.cacheSize=16"
-      - "traefik.http.middlewares.noruch.plugin.geoblock.countries=CH,RU"
-      - "traefik.http.routers.dashboard.middlewares=usonly"
+      - "28080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./dynamic_conf.yml:/etc/traefik/dynamic_conf.yml
       - ./certs:/letsencrypt
 
   whoami:
