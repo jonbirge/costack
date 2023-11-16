@@ -1,30 +1,23 @@
-# labels:
-#   - "traefik.http.middlewares.usonly.plugin.geoblock.api=https://get.geojs.io/v1/ip/country/{ip}"
-#   - "traefik.http.middlewares.usonly.plugin.geoblock.blackListMode=false"
-#   - "traefik.http.middlewares.usonly.plugin.geoblock.cacheSize=16"
-#   - "traefik.http.middlewares.usonly.plugin.geoblock.countries=US"
-#   - "traefik.http.middlewares.noruch.plugin.geoblock.api=https://get.geojs.io/v1/ip/country/{ip}"
-#   - "traefik.http.middlewares.noruch.plugin.geoblock.blackListMode=true"
-#   - "traefik.http.middlewares.noruch.plugin.geoblock.cacheSize=16"
-#   - "traefik.http.middlewares.noruch.plugin.geoblock.countries=CH,RU"
-#   - "traefik.http.routers.dashboard.middlewares=usonly"
+# Traefik dynamic configuration
 
 http:
-  routers:
-    dashboard:
-      middlewares="usonly"
   middlewares:
     usonly:
       plugin:
         geoblock:
-          api="https://get.geojs.io/v1/ip/country/{ip}"
-          cacheSize=16
-          blackListMode=false
-          countries="US"
+          api: "https://get.geojs.io/v1/ip/country/{ip}"
+          cacheSize: 16
+          forceMonthlyUpdate: true
+          blackListMode: false
+          countries:
+            - US
     noruch:
       plugin:
         geoblock:
-          api="https://get.geojs.io/v1/ip/country/{ip}"
-          cacheSize=16
-          blackListMode=true
-          countries="CH,RU"
+          api: "https://get.geojs.io/v1/ip/country/{ip}"
+          cacheSize: 16
+          blackListMode: true
+          forceMonthlyUpdate: true
+          countries:
+            - CH
+            - RU

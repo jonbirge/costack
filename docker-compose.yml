@@ -1,14 +1,12 @@
-version: "3"
+version: "3.7"
 
 services:
   reverse-proxy:
     image: traefik
     restart: always
-    environment:
-      - TRAEFIK_CONFIGFILE=/etc/traefik/traefik.yml
-      - TRAEFIK_PROVIDERS_FILE_FILENAME=/etc/traefik/dynamic_conf.yml
     command:
       - "--certificatesresolvers.stackresolver.acme.email=$EMAIL"
+      - "--configFile=/etc/traefik/traefik.yml"
     ports:
       - "80:80"
       - "443:443"
@@ -25,7 +23,9 @@ services:
       - "traefik.http.routers.whoami.rule=Host(`$HOSTNAME`) && PathPrefix(`/who`)"
       - "traefik.http.middlewares.strip-who.stripprefix.prefixes=/who"
       - "traefik.http.routers.whoami.tls.certresolver=stackresolver"
-      - "traefik.http.routers.whoami.middlewares=strip-who"
+      - "traefik.http.routers.whoami.middlewares=noruch@file,strip-who"
+    depends_on:
+      - reverse-proxy
       
   db:
     image: mysql
@@ -46,57 +46,60 @@ services:
       - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
       - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
       - "traefik.port=8080"
-      - "traefik.http.routers.adminer.middlewares=usonly"
+      - "traefik.http.routers.adminer.middlewares=usonly@file"
     depends_on:
       - db
+      - reverse-proxy
 
-  wordpress:
-    image: wordpress
-    restart: always
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: $SQL_USER
-      WORDPRESS_DB_PASSWORD: $SQL_PASS
-      WORDPRESS_DB_NAME: wordpress_db
-    volumes:
-      - ./wordpress:/var/www/html
-    labels:
-      - "traefik.http.routers.wordpress.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
-      - "traefik.http.routers.wordpress.tls.certresolver=stackresolver"
-      - "traefik.http.routers.wordpress.middlewares=noruch"
-    depends_on:
-      - db
+  # wordpress:
+  #   image: wordpress
+  #   restart: always
+  #   environment:
+  #     WORDPRESS_DB_HOST: db
+  #     WORDPRESS_DB_USER: $SQL_USER
+  #     WORDPRESS_DB_PASSWORD: $SQL_PASS
+  #     WORDPRESS_DB_NAME: wordpress_db
+  #   volumes:
+  #     - ./wordpress:/var/www/html
+  #   labels:
+  #     - "traefik.http.routers.wordpress.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
+  #     - "traefik.http.routers.wordpress.tls.certresolver=stackresolver"
+  #     - "traefik.http.routers.wordpress.middlewares=noruch"
+  #   depends_on:
+  #     - db
+  #     - reverse-proxy
 
-  guacd:
-    image: guacamole/guacd
-    restart: always
+  # guacd:
+  #   image: guacamole/guacd
+  #   restart: always
 
-  guacamole:
-    image: guacamole/guacamole
-    restart: always
-    volumes:
-      - /config
-    environment:
-      TOTP_ENABLED: "true"
-      MYSQL_HOSTNAME: db
-      MYSQL_SSL_MODE: disabled
-      MYSQL_DATABASE: guacamole_db
-      MYSQL_USER: $SQL_USER
-      MYSQL_PASSWORD: $SQL_PASS
-      GUACAMOLE_HOME: /config
-      GUACD_HOSTNAME: guacd
-    labels:
-      - "traefik.http.routers.guacamole.rule=Host(`$HOSTNAME`) && PathPrefix(`/guacamole`)"
-      - "traefik.http.routers.guacamole.tls.certresolver=stackresolver"
-      - "traefik.http.routers.guacamole.middlewares=usonly"
-    depends_on:
-      - db
-      - guacd
+  # guacamole:
+  #   image: guacamole/guacamole
+  #   restart: always
+  #   volumes:
+  #     - /config
+  #   environment:
+  #     TOTP_ENABLED: "true"
+  #     MYSQL_HOSTNAME: db
+  #     MYSQL_SSL_MODE: disabled
+  #     MYSQL_DATABASE: guacamole_db
+  #     MYSQL_USER: $SQL_USER
+  #     MYSQL_PASSWORD: $SQL_PASS
+  #     GUACAMOLE_HOME: /config
+  #     GUACD_HOSTNAME: guacd
+  #   labels:
+  #     - "traefik.http.routers.guacamole.rule=Host(`$HOSTNAME`) && PathPrefix(`/guacamole`)"
+  #     - "traefik.http.routers.guacamole.tls.certresolver=stackresolver"
+  #     - "traefik.http.routers.guacamole.middlewares=usonly"
+  #   depends_on:
+  #     - db
+  #     - guacd
+  #     - reverse-proxy
 
-  watchtower:
-    image: containrrr/watchtower
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 3600
+  # watchtower:
+  #   image: containrrr/watchtower
+  #   restart: always
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   command: --interval 3600
  

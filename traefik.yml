@@ -1,12 +1,13 @@
 # Traefik Static Configuration
-api:
-  insecure: true
 
 providers:
   docker:
     exposedByDefault: true
   file:
-    filename: "/etc/traefik/dynamic_conf.yml"
+    filename: /etc/traefik/dynamic_conf.yml
+
+api:
+  insecure: true
 
 entryPoints:
   web:
