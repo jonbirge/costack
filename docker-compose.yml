@@ -6,7 +6,7 @@ services:
     restart: always
     command:
       - "--certificatesresolvers.stackresolver.acme.email=$EMAIL"
-      - "--configFile=/etc/traefik/traefik.yml"
+      - "--configFile=/etc/traefik.yml"
     ports:
       - "80:80"
       - "443:443"
@@ -14,8 +14,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./certs:/letsencrypt
-      - ./traefik.yml:/etc/traefik/traefik.yml:ro
-      - ./dynamic_conf.yml:/etc/traefik/dynamic_conf.yml:ro
+      - ./traefik.yml:/etc/traefik.yml:ro
+      - ./traefik:/etc/traefik
 
   whoami:
     image: traefik/whoami

@@ -1,11 +1,11 @@
 # Traefik Static Configuration
 
 providers:
+  file:
+    directory: /etc/traefik
+    watch: true
   docker:
     exposedByDefault: true
-  file:
-    filename: /etc/traefik/dynamic_conf.yml
-    watch: true
 
 api:
   insecure: true
