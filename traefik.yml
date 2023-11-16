@@ -5,6 +5,7 @@ providers:
     exposedByDefault: true
   file:
     filename: /etc/traefik/dynamic_conf.yml
+    watch: true
 
 api:
   insecure: true

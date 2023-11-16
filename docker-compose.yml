@@ -13,9 +13,9 @@ services:
       - "28080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik.yml:/etc/traefik/traefik.yml:ro
-      - ./dynamic_conf.yml:/etc/traefik/dynamic_conf.yml
       - ./certs:/letsencrypt
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./dynamic_conf.yml:/etc/traefik/dynamic_conf.yml:ro
 
   whoami:
     image: traefik/whoami

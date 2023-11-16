@@ -6,7 +6,12 @@ http:
       plugin:
         geoblock:
           api: "https://get.geojs.io/v1/ip/country/{ip}"
-          cacheSize: 16
+          cacheSize: 14
+          silentStartUp: false
+          allowLocalRequests: true
+          logLocalRequests: false
+          logAllowedRequests: false
+          logApiRequests: false
           forceMonthlyUpdate: true
           blackListMode: false
           countries:
@@ -15,9 +20,16 @@ http:
       plugin:
         geoblock:
           api: "https://get.geojs.io/v1/ip/country/{ip}"
-          cacheSize: 16
+          cacheSize: 14
+          silentStartUp: false
+          allowLocalRequests: true
+          logLocalRequests: false
+          logAllowedRequests: false
+          logApiRequests: false
           blackListMode: true
           forceMonthlyUpdate: true
           countries:
             - CH
             - RU
+            - RO
+            
