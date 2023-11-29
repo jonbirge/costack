@@ -16,7 +16,7 @@ http:
           blackListMode: false
           countries:
             - US
-    noruch:
+    topten:
       plugin:
         geoblock:
           api: "https://get.geojs.io/v1/ip/country/{ip}"

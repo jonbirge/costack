@@ -10,7 +10,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "28080:8080"
+      - "28080:8080"  # traefik admin
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./certs:/letsencrypt
@@ -24,7 +24,7 @@ services:
       - "traefik.http.routers.whoami.rule=Host(`$HOSTNAME`) && PathPrefix(`/who`)"
       - "traefik.http.middlewares.strip-who.stripprefix.prefixes=/who"
       - "traefik.http.routers.whoami.tls.certresolver=stackresolver"
-      - "traefik.http.routers.whoami.middlewares=noruch@file,strip-who"
+      - "traefik.http.routers.whoami.middlewares=topten@file,strip-who"
     depends_on:
       - reverse-proxy
 
