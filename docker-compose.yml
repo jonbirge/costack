@@ -60,7 +60,7 @@ services:
     image: guacamole/guacamole
     restart: always
     volumes:
-      - /config
+      - guac-config:/config
     environment:
       TOTP_ENABLED: "true"
       MYSQL_HOSTNAME: db
@@ -77,4 +77,7 @@ services:
       - db
       - guacd
       - reverse-proxy
+
+volumes:
+  guac-config:
 
