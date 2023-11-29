@@ -36,3 +36,4 @@ experimental:
     geoblock:
       modulename: github.com/PascalMinder/geoblock
       version: v0.2.7
+

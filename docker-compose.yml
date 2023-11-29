@@ -19,6 +19,7 @@ services:
 
   whoami:
     image: traefik/whoami
+    restart: always
     labels:
       - "traefik.http.routers.whoami.rule=Host(`$HOSTNAME`) && PathPrefix(`/who`)"
       - "traefik.http.middlewares.strip-who.stripprefix.prefixes=/who"
@@ -26,7 +27,7 @@ services:
       - "traefik.http.routers.whoami.middlewares=noruch@file,strip-who"
     depends_on:
       - reverse-proxy
-      
+
   db:
     image: mysql
     restart: always
@@ -51,24 +52,6 @@ services:
       - db
       - reverse-proxy
 
-  wordpress:
-    image: wordpress
-    restart: always
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: $SQL_USER
-      WORDPRESS_DB_PASSWORD: $SQL_PASS
-      WORDPRESS_DB_NAME: wordpress_db
-    volumes:
-      - ./wordpress:/var/www/html
-    labels:
-      - "traefik.http.routers.wordpress.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
-      - "traefik.http.routers.wordpress.tls.certresolver=stackresolver"
-      - "traefik.http.routers.wordpress.middlewares=noruch@file"
-    depends_on:
-      - db
-      - reverse-proxy
-
   guacd:
     image: guacamole/guacd
     restart: always
@@ -81,7 +64,6 @@ services:
     environment:
       TOTP_ENABLED: "true"
       MYSQL_HOSTNAME: db
-      MYSQL_SSL_MODE: disabled
       MYSQL_DATABASE: guacamole_db
       MYSQL_USER: $SQL_USER
       MYSQL_PASSWORD: $SQL_PASS
@@ -96,9 +78,3 @@ services:
       - guacd
       - reverse-proxy
 
-  watchtower:
-    image: containrrr/watchtower
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 3600
