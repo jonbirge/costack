@@ -2,36 +2,53 @@
 
 ## About
 
-This repo is just a docker-compose file and associated environment settings file that allows you to instantly stand up a pretty decent company web server, including public facing WordPress site and a few back-end services for internal users, notable Guacamole. A company of any size would probably want to split these things across multiple servers, but for a small company this gets you up and running quickly and with minimal cost by sharing a database across all the services.
+This repo is a docker-compose file and associated environment settings files that will allow you to instantly stand up
+a pretty decent company web server, including public facing WordPress site, file sharing and a few back-end services for internal
+users, notably Guacamole for access to internal desktops and servers. A company of any significant size would probably want to split
+these things across multiple servers, but for a small company this gets you up and running quickly and with minimal cost by sharing
+a database across all the services.
 
-## Configuration
+Traefik is used to distribute traffic to the various backend services, as well as offer protection by country. The default configuration
+discards traffic from the top 15 countries for cyber attacks for public services, and only allows internal service connections from the US.
+
+**This is still under development, so not everything is implemented yet.**
+
+## Future work
+
+Would appreciate help or pull requests on any of the following
+
+- Nginx-based WebDAV and web-based file sharing
+- Script to create the initial dB for Guacamole. Ideally, this could be implemented as a container.
+- Mail server with SMTP and web-based back-end
+- Expand to use stacks/kube to support scaling to multiple servers, if desired
+
+## Installation
+
+### Configuration
 
 Rename the file called `config.env` to `.env` and edit the content to match your system:
 
 ```
-SQL_PASS=[anypassword]
-HOSTNAME=[hostname]
-EMAIL=[email-for-lets-encrypt]
+SQL_USER=[sql user name]
+SQL_PASS=[anypassword you choose]
+HOSTNAME=[external hostname]
+EMAIL=[admin e-mail address]
 ```
 
-## Certificates
+You will also probably want to configure the dynamic Traefik configuration file to match your desired level of
+security paranoia. The default settings is pretty restrictive, dicarding traffic from a lot of countries based
+on IP.
+
+### Certificates
 
 If you want root-signed certs from Let's Encrypt, then do the following in `.env`:
 - Make sure `HOSTNAME` is your full public server domain name. 
-- Set your e-mail to something you're willing to give to Let's Encrypt.
+- Set `EMAIL` to something you're willing to give to the good folks at Let's Encrypt.
 
-## Running
+### Running
 
 Once you've configured the environment variables in the `.env` file, you should just be able to run
 
 ```
 $ docker-compose up -d
 ```
-
-## Major future work
-
-Would appreciate help or pull requests on any of the following
-
-- Ideally, there would be a script that would create the initial dBs for everything where the containers themselves will not.
-- Add mail server
-- Expand to use stacks/kube to support scaling and services across multiple servers?
