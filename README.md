@@ -13,7 +13,7 @@ services.
 
 Traefik is used to distribute traffic to the various backend services, as well
 as offer protection by country. The default configuration discards traffic from
-the top 15 countries for cyber attacks for public services, and only allows
+the top ten countries for cyber attacks for public services, and only allows
 internal service connections from the US.
 
 **This is still under development, so not everything is implemented yet.** See
