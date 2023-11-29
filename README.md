@@ -45,8 +45,8 @@ EMAIL=[admin e-mail address]
 ```
 
 You will also probably want to configure the dynamic Traefik configuration file
-to match your desired level of security paranoia. The default settings is
-pretty restrictive, dicarding traffic from a lot of countries based on IP.
+to match your desired level of security paranoia. The default settings are
+pretty restrictive, discarding traffic from several countries based on IP.
 
 ### Certificates
 
