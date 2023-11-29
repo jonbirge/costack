@@ -28,6 +28,7 @@ Would appreciate help or pull requests on any of the following
 - Script to create the initial dB for Guacamole. Ideally, this would be
   implemented as a container.
 - Mail server with SMTP and web-based back-end
+- Implement as Digital Ocean droplet with automatic configuration
 - Expand to use stacks/kube to support scaling to multiple servers, if desired.
 
 ## Installation
