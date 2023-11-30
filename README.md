@@ -51,9 +51,6 @@ You will also probably want to configure the dynamic Traefik configuration file
 to match your desired level of security paranoia. The default settings are
 pretty restrictive, discarding traffic from several countries based on IP.
 
-Lastly, you'll meed to add your host name to nginx.conf until a proper config
-script is written. Sorry!
-
 ### Certificates
 
 If you want root-signed certs from Let's Encrypt, then do the following in
