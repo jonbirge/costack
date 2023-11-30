@@ -92,6 +92,13 @@ services:
       - guacd
       - reverse-proxy
 
+  watchtower:
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 3600
+
 #  wordpress:
 #    image: wordpress
 #    restart: always
