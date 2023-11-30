@@ -9,7 +9,7 @@
 - Put Traefik dashboard on HTTPS/HTTP port and protect with `auth` middleware
 - Add FastCGI version of WordPress
 - Configure Traefik to send /wp-admin/... through middleware
+- Digital Ocean droplet integration?
 - Use Traefik plug-in to dynamically drop unused container services?
 - Use Docker secrets for passwords?
 - Intranet page with links to services?
-

@@ -25,9 +25,12 @@ Would appreciate help or pull requests on any of the following
 
 - Add wordpress server for public-facing webpage
 - Nginx-based WebDAV and web-based file sharing
+- LDAP server which is also used for auth.
+- Central config script.
 - Script to create the initial dB for Guacamole. Ideally, this would be
   implemented as a container.
 - Mail server with SMTP and web-based back-end
+- Implement as Digital Ocean droplet with automatic configuration
 - Expand to use stacks/kube to support scaling to multiple servers, if desired.
 
 ## Installation
@@ -47,6 +50,9 @@ EMAIL=[admin e-mail address]
 You will also probably want to configure the dynamic Traefik configuration file
 to match your desired level of security paranoia. The default settings are
 pretty restrictive, discarding traffic from several countries based on IP.
+
+Lastly, you'll meed to add your host name to nginx.conf until a proper config
+script is written. Sorry!
 
 ### Certificates
 
