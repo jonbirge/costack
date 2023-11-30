@@ -8,7 +8,7 @@ providers:
     exposedByDefault: true
 
 api:
-  insecure: false
+  insecure: true
 
 entryPoints:
   web:
@@ -26,7 +26,6 @@ certificatesResolvers:
   stackresolver:
     acme:
       storage: "/letsencrypt/acme.json"
-      email: "root@birgefuller.com"
       tlsChallenge: true
       httpChallenge:
         entryPoint: websecure
