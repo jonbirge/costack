@@ -21,7 +21,7 @@ services:
     image: traefik/whoami
     restart: always
     labels:
-      - "traefik.http.middlewares.strip-who.stripprefix.prefixes=/who"
+      - "traefik.http.middlewares.strip-who.stripprefix.prefixes=/who/"
       - "traefik.http.routers.whoami.rule=Host(`$HOSTNAME`) && PathPrefix(`/who`)"
       - "traefik.http.routers.whoami.tls.certresolver=stackresolver"
       - "traefik.http.routers.whoami.middlewares=topten@file,strip-who"
@@ -32,10 +32,10 @@ services:
     image: nginx
     restart: always
     labels:
-      - "traefik.http.middlewares.strip-share.stripprefix.prefixes=/share"
-      - "traefik.http.routers.share.rule=Host(`$HOSTNAME`) && PathPrefix(`/share`)"
+      - "traefik.http.middlewares.strip-pub.stripprefix.prefixes=/pub/"
+      - "traefik.http.routers.share.rule=Host(`$HOSTNAME`) && PathPrefix(`/pub`)"
       - "traefik.http.routers.share.tls.certresolver=stackresolver"
-      - "traefik.http.routers.share.middlewares=topten@file,strip-share"
+      - "traefik.http.routers.share.middlewares=topten@file,strip-pub"
     volumes:
       - ./share:/usr/share/nginx/html:rw
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
