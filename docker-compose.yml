@@ -78,6 +78,24 @@ services:
       - guacd
       - reverse-proxy
 
+#  wordpress:
+#    image: wordpress
+#    restart: always
+#    environment:
+#      WORDPRESS_DB_HOST: db
+#      WORDPRESS_DB_USER: $SQL_USER
+#      WORDPRESS_DB_PASSWORD: $SQL_PASS
+#      WORDPRESS_DB_NAME: wordpress_db
+#    volumes:
+#      - ./wordpress:/var/www/html
+#    labels:
+#      - "traefik.http.routers.wordpress.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
+#      - "traefik.http.routers.wordpress.tls.certresolver=stackresolver"
+#      - "traefik.http.routers.wordpress.middlewares=topten@file"
+#    depends_on:
+#      - db
+#      - reverse-proxy
+
 volumes:
   guac-config:
 
