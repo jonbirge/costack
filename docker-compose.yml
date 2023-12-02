@@ -67,11 +67,11 @@ services:
       - reverse-proxy
 
   guacd:
-    image: guacamole/guacd
+    image: guacamole/guacd:1.5.3
     restart: always
 
   guacamole:
-    image: guacamole/guacamole
+    image: guacamole/guacamole:1.5.3
     restart: always
     volumes:
       - guac-config:/config
