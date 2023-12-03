@@ -1,7 +1,8 @@
-db
-.env
-*DS_Store
-certs
 *~
+*DS_Store
+.env
+db
+certs
 wordpress
-share
+www
+

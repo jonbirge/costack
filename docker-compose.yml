@@ -1,7 +1,7 @@
 version: "3.7"
 
 services:
-  reverse-proxy:
+  traefik:
     image: traefik
     restart: always
     command:
@@ -26,9 +26,9 @@ services:
       - "traefik.http.routers.whoami.tls.certresolver=stackresolver"
       - "traefik.http.routers.whoami.middlewares=topten@file,strip-who"
     depends_on:
-      - reverse-proxy
+      - traefik
 
-  share:
+  www:
     image: nginx
     restart: always
     labels:
@@ -37,10 +37,10 @@ services:
       - "traefik.http.routers.share.tls.certresolver=stackresolver"
       - "traefik.http.routers.share.middlewares=topten@file,strip-pub"
     volumes:
-      - ./share:/usr/share/nginx/html:rw
+      - ./www:/usr/share/nginx/html:rw
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - reverse-proxy
+      - traefik
 
   db:
     image: mysql
@@ -64,13 +64,13 @@ services:
       - "traefik.http.routers.adminer.middlewares=usonly@file"
     depends_on:
       - db
-      - reverse-proxy
+      - traefik
 
   guacd:
     image: guacamole/guacd:1.5.3
     restart: always
 
-  guacamole:
+  guac:
     image: guacamole/guacamole:1.5.3
     restart: always
     volumes:
@@ -90,7 +90,7 @@ services:
     depends_on:
       - db
       - guacd
-      - reverse-proxy
+      - traefik
 
   watchtower:
     image: containrrr/watchtower
@@ -115,7 +115,7 @@ services:
 #      - "traefik.http.routers.wordpress.middlewares=topten@file"
 #    depends_on:
 #      - db
-#      - reverse-proxy
+#      - traefik
 
 volumes:
   guac-config:
