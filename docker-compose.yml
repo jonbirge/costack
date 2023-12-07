@@ -17,17 +17,6 @@ services:
       - ./traefik.yml:/etc/traefik.yml:ro
       - ./traefik:/etc/traefik
 
-  whoami:
-    image: traefik/whoami
-    restart: always
-    labels:
-      - "traefik.http.middlewares.strip-who.stripprefix.prefixes=/who/"
-      - "traefik.http.routers.whoami.rule=Host(`$HOSTNAME`) && PathPrefix(`/who`)"
-      - "traefik.http.routers.whoami.tls.certresolver=stackresolver"
-      - "traefik.http.routers.whoami.middlewares=topten@file,strip-who"
-    depends_on:
-      - traefik
-
   www:
     image: nginx
     restart: always
@@ -39,7 +28,13 @@ services:
       - ./www:/usr/share/nginx/html:rw
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - traefik
+      - php
+
+  php:
+    image: bitnami/php-fpm
+    volumes:
+      - ./www:/usr/share/nginx/html:rw
+    restart: always
 
   db:
     image: mysql
@@ -63,7 +58,6 @@ services:
       - "traefik.http.routers.adminer.middlewares=usonly@file"
     depends_on:
       - db
-      - traefik
 
   guacd:
     image: guacamole/guacd:1.5.3
@@ -89,7 +83,15 @@ services:
     depends_on:
       - db
       - guacd
-      - traefik
+
+  whoami:
+    image: traefik/whoami
+    restart: always
+    labels:
+      - "traefik.http.middlewares.strip-who.stripprefix.prefixes=/who/"
+      - "traefik.http.routers.whoami.rule=Host(`$HOSTNAME`) && PathPrefix(`/who`)"
+      - "traefik.http.routers.whoami.tls.certresolver=stackresolver"
+      - "traefik.http.routers.whoami.middlewares=topten@file,strip-who"
 
   watchtower:
     image: containrrr/watchtower
