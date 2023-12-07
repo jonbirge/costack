@@ -25,13 +25,13 @@ services:
       - "traefik.http.routers.share.tls.certresolver=stackresolver"
       - "traefik.http.routers.share.middlewares=topten@file"
     volumes:
-      - ./www:/usr/share/nginx/html:ro
+      - ./www:/usr/share/nginx/html:rw
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - php
 
   php:
-    image: php:fpm-alpine
+    image: bitnami/php-fpm
     volumes:
       - ./www:/usr/share/nginx/html:rw
     restart: always
