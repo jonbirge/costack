@@ -12,7 +12,7 @@ affordable to run on a single cloud server that will help a small seed-stage
 business provide a few resources.
 
 Traefik is used to distribute traffic to the various backend services, as well
-as offer protection by country. The default configuration discards traffic from
+as offer IP-based protection. The default configuration discards traffic from
 the top ten countries for cyber attacks for public services, and only allows
 internal service connections from the US.
 
@@ -38,7 +38,6 @@ Rename the file called `config.env` to `.env` and edit the content to match
 your system:
 
 ```
-SQL_USER=[sql user name]
 SQL_PASS=[any password you choose]
 HOSTNAME=[your external hostname]
 EMAIL=[admin e-mail address]
