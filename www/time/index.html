@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Current Time</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Helvetica', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+        }
+    </style>
+    <script>
+        function fetchTime() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById("time").innerHTML = xhr.responseText;
+                }
+            };
+            xhr.open("GET", "time.php", true);
+            xhr.send();
+        }
+
+        setInterval(fetchTime, 1000);
+    </script>
+</head>
+<body onload="fetchTime()">
+    <div id="time"></div>
+</body>
+</html>
+
