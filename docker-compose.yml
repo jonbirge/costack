@@ -84,39 +84,12 @@ services:
       - db
       - guacd
 
-  whoami:
-    image: traefik/whoami
-    restart: always
-    labels:
-      - "traefik.http.middlewares.strip-who.stripprefix.prefixes=/who/"
-      - "traefik.http.routers.whoami.rule=Host(`$HOSTNAME`) && PathPrefix(`/who`)"
-      - "traefik.http.routers.whoami.tls.certresolver=stackresolver"
-      - "traefik.http.routers.whoami.middlewares=topten@file,strip-who"
-
   watchtower:
     image: containrrr/watchtower
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 3600
-
-#  wordpress:
-#    image: wordpress
-#    restart: always
-#    environment:
-#      WORDPRESS_DB_HOST: db
-#      WORDPRESS_DB_USER: $SQL_USER
-#      WORDPRESS_DB_PASSWORD: $SQL_PASS
-#      WORDPRESS_DB_NAME: wordpress_db
-#    volumes:
-#      - ./wordpress:/var/www/html
-#    labels:
-#      - "traefik.http.routers.wordpress.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
-#      - "traefik.http.routers.wordpress.tls.certresolver=stackresolver"
-#      - "traefik.http.routers.wordpress.middlewares=topten@file"
-#    depends_on:
-#      - db
-#      - traefik
 
 volumes:
   guac-config:
