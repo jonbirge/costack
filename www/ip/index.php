@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <title>Your IP Address</title>
+    <title>HTTP Client Info</title>
 </head>
 <body>
     <div class="container">
-        <h1>Your IP Address</h1>
+        <h1>HTTP Client Info</h1>
         <table>
             <tr>
                 <th>Information</th>
                 <th>Value</th>
             </tr>
             <tr>
-                <td>Your IP Address:</td>
+                <td>IP Address:</td>
                 <td>
                     <?php
                     if (isset($_SERVER['HTTP_X_REAL_IP'])) {
@@ -28,7 +28,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Your Host Name:</td>
+                <td>Host Name:</td>
                 <td>
                     <?php
                     $host_name = gethostbyaddr($user_ip);
@@ -36,6 +36,14 @@
                     ?>
                 </td>
             </tr>
+	    <tr>
+		<td>Time:</td>
+		<td>
+		    <?php
+		    echo shell_exec('date');
+		    ?>
+		</td>
+	    </tr>
         </table>
     </div>
 </body>
