@@ -1,6 +1,7 @@
 # TODO
 
 - Stop publicly sharing Traefik maintenance port
+- Write nginx logs to db?
 - Wordpress public-facing site
 - Auth for all private services based on LDAP?
 - Mail server and web interface
