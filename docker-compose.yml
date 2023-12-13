@@ -17,6 +17,13 @@ services:
       - ./traefik.yml:/etc/traefik.yml:ro
       - ./traefik:/etc/traefik
 
+  livetrace:
+    image: jonbirge/livetrace
+    labels:
+      - "traefik.http.routers.share.rule=Host(`$HOSTNAME`) && PathPrefix(`trace`)"
+      - "traefik.http.routers.share.tls.certresolver=stackresolver"
+      - "traefik.http.routers.share.middlewares=usonly@file"
+
   www:
     image: nginx
     restart: always
