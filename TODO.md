@@ -1,5 +1,7 @@
 # TODO
 
+- Flush these to github issues
+- Management console to turn on and off services
 - Stop publicly sharing Traefik maintenance port
 - Write nginx logs to db?
 - Wordpress public-facing site
