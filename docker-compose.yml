@@ -12,6 +12,7 @@ services:
       - "443:443"
       - "28080:8080"  # traefik admin
     volumes:
+      - ./logs/:/logs/:rw
       - /var/run/docker.sock:/var/run/docker.sock
       - ./certs:/letsencrypt
       - ./traefik.yml:/etc/traefik.yml:ro
@@ -19,18 +20,20 @@ services:
 
   livetrace:
     image: jonbirge/livetrace
+    restart: always
     labels:
-      - "traefik.http.routers.share.rule=Host(`$HOSTNAME`) && PathPrefix(`trace`)"
-      - "traefik.http.routers.share.tls.certresolver=stackresolver"
-      - "traefik.http.routers.share.middlewares=usonly@file"
+      - "traefik.http.routers.livetrace.rule=Host(`$HOSTNAME`) && PathPrefix(`/trace`)"
+      - "traefik.http.routers.livetrace.tls.certresolver=stackresolver"
+      - "traefik.http.middlewares.strip-trace.stripprefix.prefixes=/trace"
+      - "traefik.http.routers.livetrace.middlewares=topten@file,strip-trace"
 
   www:
     image: nginx
     restart: always
     labels:
-      - "traefik.http.routers.share.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
-      - "traefik.http.routers.share.tls.certresolver=stackresolver"
-      - "traefik.http.routers.share.middlewares=topten@file"
+      - "traefik.http.routers.www.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
+      - "traefik.http.routers.www.tls.certresolver=stackresolver"
+      - "traefik.http.routers.www.middlewares=topten@file"
     volumes:
       - ./www:/usr/share/nginx/html:rw
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
@@ -39,65 +42,65 @@ services:
 
   php:
     image: bitnami/php-fpm
+    restart: always
     volumes:
       - ./www:/usr/share/nginx/html:rw
-    restart: always
 
-  db:
-    image: mysql
-    restart: always
-    volumes:
-      - ./db:/var/lib/mysql
-    command:
-      - "--default-authentication-plugin=caching_sha2_password"
-    environment:
-      MYSQL_ROOT_PASSWORD: $SQL_ROOT_PASS
-      MYSQL_USER: sqluser
-      MYSQL_PASSWORD: $SQL_PASS
-
-  adminer:
-    image: adminer
-    restart: always
-    labels:
-      - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
-      - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
-      - "traefik.port=8080"
-      - "traefik.http.routers.adminer.middlewares=usonly@file"
-    depends_on:
-      - db
-
-  guacd:
-    image: guacamole/guacd:1.5.3
-    restart: always
-
-  guac:
-    image: guacamole/guacamole:1.5.3
-    restart: always
-    volumes:
-      - guac-config:/config
-    environment:
-      TOTP_ENABLED: "true"
-      MYSQL_HOSTNAME: db
-      MYSQL_DATABASE: guacamole_db
-      MYSQL_USER: sqluser
-      MYSQL_PASSWORD: $SQL_PASS
-      GUACAMOLE_HOME: /config
-      GUACD_HOSTNAME: guacd
-    labels:
-      - "traefik.http.routers.guacamole.rule=Host(`$HOSTNAME`) && PathPrefix(`/guacamole`)"
-      - "traefik.http.routers.guacamole.tls.certresolver=stackresolver"
-      - "traefik.http.routers.guacamole.middlewares=usonly@file"
-    depends_on:
-      - db
-      - guacd
-
-  watchtower:
-    image: containrrr/watchtower
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 3600
-
-volumes:
-  guac-config:
+#  db:
+#    image: mysql
+#    restart: always
+#    volumes:
+#      - ./db:/var/lib/mysql
+#    command:
+#      - "--default-authentication-plugin=caching_sha2_password"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: $SQL_ROOT_PASS
+#      MYSQL_USER: sqluser
+#      MYSQL_PASSWORD: $SQL_PASS
+#
+#  adminer:
+#    image: adminer
+#    restart: always
+#    labels:
+#      - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
+#      - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
+#      - "traefik.port=8080"
+#      - "traefik.http.routers.adminer.middlewares=usonly@file"
+#    depends_on:
+#      - db
+#
+#  guacd:
+#    image: guacamole/guacd:1.5.3
+#    restart: always
+#
+#  guac:
+#    image: guacamole/guacamole:1.5.3
+#    restart: always
+#    volumes:
+#      - guac-config:/config
+#    environment:
+#      TOTP_ENABLED: "true"
+#      MYSQL_HOSTNAME: db
+#      MYSQL_DATABASE: guacamole_db
+#      MYSQL_USER: sqluser
+#      MYSQL_PASSWORD: $SQL_PASS
+#      GUACAMOLE_HOME: /config
+#      GUACD_HOSTNAME: guacd
+#    labels:
+#      - "traefik.http.routers.guacamole.rule=Host(`$HOSTNAME`) && PathPrefix(`/guacamole`)"
+#      - "traefik.http.routers.guacamole.tls.certresolver=stackresolver"
+#      - "traefik.http.routers.guacamole.middlewares=usonly@file"
+#    depends_on:
+#      - db
+#      - guacd
+#
+#  watchtower:
+#    image: containrrr/watchtower
+#    restart: always
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    command: --interval 3600
+#
+#volumes:
+#  guac-config:
 
