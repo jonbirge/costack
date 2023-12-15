@@ -12,18 +12,28 @@ services:
       - "443:443"
       - "28080:8080"  # traefik admin
     volumes:
+      - ./logs/:/logs/:rw
       - /var/run/docker.sock:/var/run/docker.sock
       - ./certs:/letsencrypt
       - ./traefik.yml:/etc/traefik.yml:ro
       - ./traefik:/etc/traefik
 
+  livetrace:
+    image: jonbirge/livetrace
+    restart: always
+    labels:
+      - "traefik.http.routers.livetrace.rule=Host(`$HOSTNAME`) && PathPrefix(`/trace`)"
+      - "traefik.http.routers.livetrace.tls.certresolver=stackresolver"
+      - "traefik.http.middlewares.strip-trace.stripprefix.prefixes=/trace/"
+      - "traefik.http.routers.livetrace.middlewares=topten@file,strip-trace"
+
   www:
     image: nginx
     restart: always
     labels:
-      - "traefik.http.routers.share.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
-      - "traefik.http.routers.share.tls.certresolver=stackresolver"
-      - "traefik.http.routers.share.middlewares=topten@file"
+      - "traefik.http.routers.www.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
+      - "traefik.http.routers.www.tls.certresolver=stackresolver"
+      - "traefik.http.routers.www.middlewares=topten@file"
     volumes:
       - ./www:/usr/share/nginx/html:rw
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
@@ -32,9 +42,9 @@ services:
 
   php:
     image: bitnami/php-fpm
+    restart: always
     volumes:
       - ./www:/usr/share/nginx/html:rw
-    restart: always
 
   db:
     image: mysql
@@ -89,7 +99,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 3600
+    command: --interval 360
 
 volumes:
   guac-config:

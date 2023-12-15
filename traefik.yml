@@ -1,5 +1,8 @@
 # Traefik Static Configuration
 
+accesslog:
+  filePath: "/logs/access.log"
+
 providers:
   file:
     directory: /etc/traefik

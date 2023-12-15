@@ -1,5 +1,7 @@
 # TODO
 
+- Flush these to github issues
+- Management console to turn on and off services
 - Stop publicly sharing Traefik maintenance port
 - Enable Traefik access logs
 - Write nginx logs to db?
