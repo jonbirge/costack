@@ -24,7 +24,7 @@ services:
     labels:
       - "traefik.http.routers.livetrace.rule=Host(`$HOSTNAME`) && PathPrefix(`/trace`)"
       - "traefik.http.routers.livetrace.tls.certresolver=stackresolver"
-      - "traefik.http.middlewares.strip-trace.stripprefix.prefixes=/trace"
+      - "traefik.http.middlewares.strip-trace.stripprefix.prefixes=/trace/"
       - "traefik.http.routers.livetrace.middlewares=topten@file,strip-trace"
 
   www:
