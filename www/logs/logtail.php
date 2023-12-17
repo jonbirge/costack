@@ -1,3 +1,6 @@
+<table border='1'>
+<tr><th>IP Address</th><th>Host Name</th><th>Date and Time</th><th>Request</th><th>Status</th><th>Size</th></tr>
+
 <?php
 
 // Number of lines to read from the end of the file
@@ -35,10 +38,6 @@ function tailCustom($filePath, $lines = 1) {
 // Read the last n lines from the file
 $lastLines = explode("\n", tailCustom($logFilePath, $n));
 
-// Start the HTML table
-echo "<table border='1'>";
-echo "<tr><th>IP Address</th><th>Host Name</th><th>Date and Time</th><th>Request</th><th>Status</th><th>Size</th></tr>";
-
 // Process each line
 foreach ($lastLines as $line) {
     preg_match('/(\S+) \S+ \S+ \[(.+?)\] \"(.*?)\" (\S+) (\S+)/', $line, $matches);
@@ -57,7 +56,6 @@ foreach ($lastLines as $line) {
     }
 }
 
-echo "</table>";
-
 ?>
 
+</table>
