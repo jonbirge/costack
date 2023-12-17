@@ -12,7 +12,7 @@ services:
       - "443:443"
       - "28080:8080"  # traefik admin
     volumes:
-      - ./logs/:/logs/:rw
+      - ./www/logs/:/logs/:rw
       - /var/run/docker.sock:/var/run/docker.sock
       - ./certs:/letsencrypt
       - ./traefik.yml:/etc/traefik.yml:ro
