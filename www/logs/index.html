@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="styles.css?version=10">
+    <title>Access logs</title>
+
+    <script>
+        let pollInterval;
+        let polling = false;
+
+        function pollServer() {
+            const logDiv = document.getElementById('log');
+            fetch('logtail.php')
+                .then(response => response.text())
+                .then(data => {
+                    logDiv.innerHTML = data;
+                });
+        };
+
+        function runWatch() {
+            const watchButton = document.getElementById('watch-button');
+            if (polling) {
+                polling = false;
+                clearInterval(pollInterval);
+                watchButton.innerHTML = "Watch";
+                watchButton.classList.remove("red");
+            } else {
+                pollServer();
+                polling = true;
+                pollInterval = setInterval(pollServer, 10000);
+                watchButton.innerHTML = "Stop";
+                watchButton.classList.add("red");
+            };
+        };
+
+        window.onload = pollServer;
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Access log tail</h1>
+        <button class="toggle-button" id="watch-button" onclick="runWatch()">Watch</button>
+        <div id="log">
+            <!-- log file will go here -->
+        </div>
+    </div>
+</body>
+
+</html>
