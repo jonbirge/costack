@@ -6,8 +6,8 @@ body, h1, table {
 
 /* Style the page container */
 .container {
-    font-family: 'Helvetica', sans-serif;
-    font-size: 16px; /* Slightly smaller font size */
+    font-family: 'Arial', sans-serif;
+    font-size: 14px; /* Slightly smaller font size */
     margin: 18px;
 }
 
@@ -25,16 +25,33 @@ table {
 table, th, td {
     border: 1px solid #333;
     margin-bottom: 20px;
+    text-align: left;
+    padding: 9px;
 }
 
-th, td {
-    padding: 10px;
-    text-align: left;
+th {
+    background-color: #424242cc;
+    color: white;
+    font-weight: bold;
 }
 
 /* Style alternating rows */
 tr:nth-child(even) {
     background-color: #f2f2f2;
+}
+
+/* Hover effect for rows */
+tr:hover {
+    background-color: #ddd;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+    table {
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+    }
 }
 
 /* Styling the button for a modern look */

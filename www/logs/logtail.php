@@ -37,18 +37,24 @@ $lastLines = explode("\n", tailCustom($logFilePath, $n));
 
 // Start the HTML table
 echo "<table border='1'>";
-echo "<tr><th>IP Address</th><th>Identity</th><th>User</th><th>Date and Time</th><th>Request</th><th>Status</th><th>Size</th></tr>";
+echo "<tr><th>IP Address</th><th>Host Name</th><th>Date and Time</th><th>Request</th><th>Status</th><th>Size</th></tr>";
 
 // Process each line
 foreach ($lastLines as $line) {
-    // Parsing the line with a regular expression
-    preg_match('/(\S+) (\S+) (\S+) \[(.+?)\] \"(.*?)\" (\S+) (\S+)/', $line, $matches);
+    preg_match('/(\S+) \S+ \S+ \[(.+?)\] \"(.*?)\" (\S+) (\S+)/', $line, $matches);
 
-    echo "<tr>";
-    for ($i = 1; $i <= 7; $i++) {
-        echo "<td>" . htmlspecialchars($matches[$i] ?? '-') . "</td>";
+    if (!empty($matches)) {
+        $ip = $matches[1];
+        $host = gethostbyaddr($ip); // Lookup the host name from the IP address
+
+        echo "<tr>";
+        echo "<td>" . htmlspecialchars($ip) . "</td>";
+        echo "<td>" . htmlspecialchars($host) . "</td>";
+        for ($i = 2; $i <= 5; $i++) {
+            echo "<td>" . htmlspecialchars($matches[$i] ?? '-') . "</td>";
+        }
+        echo "</tr>";
     }
-    echo "</tr>";
 }
 
 echo "</table>";
