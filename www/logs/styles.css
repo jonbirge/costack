@@ -20,17 +20,18 @@ h1 {
 /* Style the table */
 table {
     border-collapse: collapse;
+    width: 100%;
 }
 
 table, th, td {
-    border: 1px solid #333;
+    border: 1px solid #202020;
     margin-bottom: 20px;
     text-align: left;
-    padding: 9px;
+    padding: 8px;
 }
 
 th {
-    background-color: #424242cc;
+    background-color: #323232cc;
     color: white;
     font-weight: bold;
 }
@@ -48,13 +49,18 @@ tr:nth-child(even) {
     }
 }
 
+/* Center the buttons */
+.button-set {
+    text-align: center;
+}
+
 /* Styling the button for a modern look */
 .toggle-button {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     background-color: #4CAF50; /* Green background */
     border: none;
     color: white;
-    padding: 12px 28px; /* Larger padding for a bigger button */
+    padding: 10px 14px; /* Larger padding for a bigger button */
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -79,3 +85,10 @@ tr:nth-child(even) {
     background-color: lightcoral;
 }
 
+.toggle-button.gray {
+    background-color: rgb(69, 69, 69);
+}
+
+.toggle-button.gray:hover {
+    background-color: rgb(137, 137, 137);
+}
