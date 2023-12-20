@@ -35,6 +35,8 @@ services:
       - "traefik.http.routers.logpager.tls.certresolver=stackresolver"
       - "traefik.http.middlewares.strip-log.stripprefix.prefixes=/logs/"
       - "traefik.http.routers.logpager.middlewares=usonly@file,strip-log"
+    volumes:
+      - ./logs/access.log:/access.log:ro
 
   www:
     image: nginx
