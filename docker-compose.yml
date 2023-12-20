@@ -12,7 +12,7 @@ services:
       - "443:443"
       - "28080:8080"  # traefik admin
     volumes:
-      - ./www/logs/:/logs/:rw
+      - ./logs/:/logs/:rw
       - /var/run/docker.sock:/var/run/docker.sock
       - ./certs:/letsencrypt
       - ./traefik.yml:/etc/traefik.yml:ro
@@ -26,6 +26,15 @@ services:
       - "traefik.http.routers.livetrace.tls.certresolver=stackresolver"
       - "traefik.http.middlewares.strip-trace.stripprefix.prefixes=/trace/"
       - "traefik.http.routers.livetrace.middlewares=topten@file,strip-trace"
+
+  logpager:
+    image: jonbirge/logpager
+    restart: always
+    labels:
+      - "traefik.http.routers.logpager.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs`)"
+      - "traefik.http.routers.logpager.tls.certresolver=stackresolver"
+      - "traefik.http.middlewares.strip-log.stripprefix.prefixes=/logs/"
+      - "traefik.http.routers.logpager.middlewares=usonly@file,strip-log"
 
   www:
     image: nginx
