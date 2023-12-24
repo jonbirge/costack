@@ -19,7 +19,7 @@ services:
       - ./traefik:/etc/traefik
 
   livetrace:
-    image: jonbirge/livetrace
+    image: ghcr.io/jonbirge/livetrace:master
     restart: always
     labels:
       - "traefik.http.routers.livetrace.rule=Host(`$HOSTNAME`) && PathPrefix(`/trace`)"
@@ -28,7 +28,7 @@ services:
       - "traefik.http.routers.livetrace.middlewares=topten@file,strip-trace"
 
   logpager:
-    image: jonbirge/logpager
+    image: ghcr.io/jonbirge/logpager:master
     restart: always
     labels:
       - "traefik.http.routers.logpager.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs`)"
