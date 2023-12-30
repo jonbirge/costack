@@ -18,17 +18,9 @@ services:
       - ./traefik.yml:/etc/traefik.yml:ro
       - ./traefik:/etc/traefik
 
-  livetrace:
-    image: ghcr.io/jonbirge/livetrace:master
-    restart: always
-    labels:
-      - "traefik.http.routers.livetrace.rule=Host(`$HOSTNAME`) && PathPrefix(`/trace`)"
-      - "traefik.http.routers.livetrace.tls.certresolver=stackresolver"
-      - "traefik.http.middlewares.strip-trace.stripprefix.prefixes=/trace/"
-      - "traefik.http.routers.livetrace.middlewares=topten@file,strip-trace"
-
   logpager:
-    image: ghcr.io/jonbirge/logpager:master
+    # image: ghcr.io/jonbirge/logpager:master
+    image: jonbirge/logpager
     restart: always
     labels:
       - "traefik.http.routers.logpager.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs`)"
@@ -37,6 +29,16 @@ services:
       - "traefik.http.routers.logpager.middlewares=usonly@file,strip-log"
     volumes:
       - ./logs/access.log:/access.log:ro
+      - ./logs/excludes.json:/excludes.json:ro
+
+  livetrace:
+    image: ghcr.io/jonbirge/livetrace:master
+    restart: always
+    labels:
+      - "traefik.http.routers.livetrace.rule=Host(`$HOSTNAME`) && PathPrefix(`/trace`)"
+      - "traefik.http.routers.livetrace.tls.certresolver=stackresolver"
+      - "traefik.http.middlewares.strip-trace.stripprefix.prefixes=/trace/"
+      - "traefik.http.routers.livetrace.middlewares=topten@file,strip-trace"
 
   www:
     image: nginx
@@ -110,7 +112,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 360
+    command: --interval 60
 
 volumes:
   guac-config:
