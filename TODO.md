@@ -1,7 +1,5 @@
 # TODO
 
-- Flush these to github issues
-- Rotate logs
 - Auth for all private services based on LDAP
 - Stop publicly sharing Traefik maintenance port
 - Mail server and web interface

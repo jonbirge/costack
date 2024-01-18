@@ -11,6 +11,9 @@ across multiple servers, but the goal here is to create something affordable to
 run on a single cloud server that will help a small seed-stage business provide
 a few resources.
 
+The intention is to keep the RAM requirements of this stack such that a 1 GB
+server instance can be reliably used.
+
 Traefik is used to distribute traffic to the various backend services, as well
 as offer IP-based protection. The default configuration discards traffic from
 the top ten countries for cyber attacks for public services, and only allows

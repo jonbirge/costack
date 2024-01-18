@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3"
 
 services:
   traefik:
@@ -19,17 +19,16 @@ services:
       - ./traefik:/etc/traefik
 
   logpager:
-    # image: ghcr.io/jonbirge/logpager:master
-    image: jonbirge/logpager
-    restart: always
+    image: ghcr.io/jonbirge/logpager:dev
     labels:
-      - "traefik.http.routers.logpager.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs`)"
-      - "traefik.http.routers.logpager.tls.certresolver=stackresolver"
-      - "traefik.http.middlewares.strip-log.stripprefix.prefixes=/logs/"
-      - "traefik.http.routers.logpager.middlewares=usonly@file,strip-log"
+      - "traefik.http.routers.logpagerdev.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs`)"
+      - "traefik.http.routers.logpagerdev.tls.certresolver=stackresolver"
+      - "traefik.http.middlewares.striplogdev.stripprefix.prefixes=/logs/"
+      - "traefik.http.routers.logpagerdev.middlewares=usonly@file,striplogdev"
     volumes:
       - ./logs/access.log:/access.log:ro
-      - ./logs/excludes.json:/excludes.json:ro
+      - /var/log/auth.log:/auth.log:ro
+      - ./logs/excludes.json:/excludes.json
 
   livetrace:
     image: ghcr.io/jonbirge/livetrace:master
@@ -83,11 +82,11 @@ services:
       - db
 
   guacd:
-    image: guacamole/guacd:1.5.3
+    image: guacamole/guacd
     restart: always
 
   guac:
-    image: guacamole/guacamole:1.5.3
+    image: guacamole/guacamole
     restart: always
     volumes:
       - guac-config:/config
@@ -112,7 +111,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 60
+    command: --interval 120
 
 volumes:
   guac-config:
