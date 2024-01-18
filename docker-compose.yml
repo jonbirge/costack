@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3"
 
 services:
   traefik:
@@ -12,14 +12,26 @@ services:
       - "443:443"
       - "28080:8080"  # traefik admin
     volumes:
-      - ./www/logs/:/logs/:rw
+      - ./logs/:/logs/:rw
       - /var/run/docker.sock:/var/run/docker.sock
       - ./certs:/letsencrypt
       - ./traefik.yml:/etc/traefik.yml:ro
       - ./traefik:/etc/traefik
 
+  logpager:
+    image: ghcr.io/jonbirge/logpager:dev
+    labels:
+      - "traefik.http.routers.logpagerdev.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs`)"
+      - "traefik.http.routers.logpagerdev.tls.certresolver=stackresolver"
+      - "traefik.http.middlewares.striplogdev.stripprefix.prefixes=/logs/"
+      - "traefik.http.routers.logpagerdev.middlewares=usonly@file,striplogdev"
+    volumes:
+      - ./logs/access.log:/access.log:ro
+      - /var/log/auth.log:/auth.log:ro
+      - ./logs/excludes.json:/excludes.json
+
   livetrace:
-    image: jonbirge/livetrace
+    image: ghcr.io/jonbirge/livetrace:master
     restart: always
     labels:
       - "traefik.http.routers.livetrace.rule=Host(`$HOSTNAME`) && PathPrefix(`/trace`)"
@@ -70,11 +82,11 @@ services:
       - db
 
   guacd:
-    image: guacamole/guacd:1.5.3
+    image: guacamole/guacd
     restart: always
 
   guac:
-    image: guacamole/guacamole:1.5.3
+    image: guacamole/guacamole
     restart: always
     volumes:
       - guac-config:/config
@@ -99,7 +111,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 360
+    command: --interval 120
 
 volumes:
   guac-config:

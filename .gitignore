@@ -1,9 +1,9 @@
 *~
 *.log
+*.json
 *DS_Store
 .env
 db
 certs
-wordpress
 www
 

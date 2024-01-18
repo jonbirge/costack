@@ -1,7 +1,5 @@
 # TODO
 
-- Flush these to github issues
-- Move user www files and logs to outside volumes
 - Auth for all private services based on LDAP
 - Stop publicly sharing Traefik maintenance port
 - Mail server and web interface
@@ -11,5 +9,3 @@
 - Management console to turn on and off services
 - Management dashboard to show usage
 - Intranet page with links to services
-- Wordpress public-facing site
-- Write nginx logs to db
