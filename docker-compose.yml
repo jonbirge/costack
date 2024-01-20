@@ -17,6 +17,12 @@ services:
       - ./certs:/letsencrypt
       - ./traefik.yml:/etc/traefik.yml:ro
       - ./traefik:/etc/traefik
+    depends_on:
+      - logpager
+      - livetrace
+      - guac
+      - www
+      - adminer
 
   logpager:
     image: ghcr.io/jonbirge/logpager:dev
