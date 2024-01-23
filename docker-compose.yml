@@ -18,11 +18,11 @@ services:
       - ./traefik.yml:/etc/traefik.yml:ro
       - ./traefik:/etc/traefik
     depends_on:
+      - adminer
       - logpager
       - livetrace
       - guac
       - www
-      - adminer
 
   logpager:
     image: ghcr.io/jonbirge/logpager:dev
@@ -118,7 +118,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 120
+    command: --interval 60
 
 volumes:
   guac-config:
