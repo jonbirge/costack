@@ -26,6 +26,7 @@ services:
 
   logpager:
     image: ghcr.io/jonbirge/logpager:dev
+    restart: always
     labels:
       - "traefik.http.routers.logpagerdev.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs`)"
       - "traefik.http.routers.logpagerdev.tls.certresolver=stackresolver"
