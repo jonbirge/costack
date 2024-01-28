@@ -20,7 +20,6 @@ services:
     depends_on:
       - adminer
       - logpager
-      - livetrace
       - guac
       - www
 
@@ -37,15 +36,6 @@ services:
       - ./logs/access.log:/access.log:ro
       - ./logs/excludes.json:/excludes.json:ro
       - ./logs/blacklist:/blacklist:rw
-
-  livetrace:
-    image: ghcr.io/jonbirge/livetrace:master
-    restart: always
-    labels:
-      - "traefik.http.routers.livetrace.rule=Host(`$HOSTNAME`) && PathPrefix(`/trace`)"
-      - "traefik.http.routers.livetrace.tls.certresolver=stackresolver"
-      - "traefik.http.middlewares.strip-trace.stripprefix.prefixes=/trace/"
-      - "traefik.http.routers.livetrace.middlewares=usonly@file,strip-trace"
 
   www:
     image: nginx
