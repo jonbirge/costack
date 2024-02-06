@@ -34,7 +34,6 @@ services:
     volumes:
       - /var/log/auth.log:/auth.log:ro
       - ./logs/access.log:/access.log:ro
-      - ./logs/excludes.json:/excludes.json:ro
       - ./logs/blacklist:/blacklist:rw
 
   www:
