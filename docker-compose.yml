@@ -10,7 +10,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "28080:8080"  # traefik admin
+      # - "28080:8080"  # traefik admin
     volumes:
       - ./logs/:/logs/:rw
       - /var/run/docker.sock:/var/run/docker.sock
@@ -18,13 +18,13 @@ services:
       - ./traefik.yml:/etc/traefik.yml:ro
       - ./traefik:/etc/traefik
     depends_on:
-      - adminer
+      # - adminer
       - logpager
       - guac
       - www
 
   logpager:
-    image: ghcr.io/jonbirge/logpager:dev
+    image: jonbirge/logpager
     restart: always
     labels:
       - "traefik.http.routers.logpagerdev.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs`)"
@@ -67,16 +67,16 @@ services:
       MYSQL_USER: sqluser
       MYSQL_PASSWORD: $SQL_PASS
 
-  adminer:
-    image: adminer
-    restart: always
-    labels:
-      - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
-      - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
-      - "traefik.port=8080"
-      - "traefik.http.routers.adminer.middlewares=usonly@file"
-    depends_on:
-      - db
+#  adminer:
+#    image: adminer
+#    restart: always
+#    labels:
+#      - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
+#      - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
+#      - "traefik.port=8080"
+#      - "traefik.http.routers.adminer.middlewares=usonly@file"
+#    depends_on:
+#      - db
 
   guacd:
     image: guacamole/guacd
@@ -88,7 +88,7 @@ services:
     volumes:
       - guac-config:/config
     environment:
-      TOTP_ENABLED: "true"
+      # TOTP_ENABLED: "true"
       MYSQL_HOSTNAME: db
       MYSQL_DATABASE: guacamole_db
       MYSQL_USER: sqluser
