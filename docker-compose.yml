@@ -26,6 +26,10 @@ services:
   logpager:
     image: jonbirge/logpager
     restart: always
+    environment:
+      SQL_HOST: db
+      SQL_USER: sqluser
+      SQL_PASS: $SQL_PASS
     labels:
       - "traefik.http.routers.logpagerdev.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs`)"
       - "traefik.http.routers.logpagerdev.tls.certresolver=stackresolver"
@@ -35,6 +39,8 @@ services:
       - /var/log/auth.log:/auth.log:ro
       - ./logs/access.log:/access.log:ro
       - ./logs/blacklist.txt:/blacklist:rw
+    depends_on:
+      - db
 
   www:
     image: nginx
