@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   traefik:
     image: traefik
@@ -10,7 +8,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      # - "28080:8080"  # traefik admin
+      # - "8080:8080"  # traefik admin
     volumes:
       - ./logs/:/logs/:rw
       - /var/run/docker.sock:/var/run/docker.sock
@@ -18,7 +16,7 @@ services:
       - ./traefik.yml:/etc/traefik.yml:ro
       - ./traefik:/etc/traefik
     depends_on:
-      # - adminer
+      - adminer
       - logpager
       - guac
       - www
@@ -38,7 +36,7 @@ services:
     volumes:
       - /var/log/auth.log:/auth.log:ro
       - ./logs/access.log:/access.log:ro
-      - ./logs/blacklist.txt:/blacklist:rw
+      # - ../logpager/src:/var/www:ro  # live development
     depends_on:
       - db
 
@@ -66,8 +64,6 @@ services:
     restart: always
     volumes:
       - ./db:/var/lib/mysql
-    command:
-      - "--default-authentication-plugin=caching_sha2_password"
     environment:
       MYSQL_ROOT_PASSWORD: $SQL_ROOT_PASS
       MYSQL_USER: sqluser
@@ -76,6 +72,8 @@ services:
   adminer:
     image: adminer
     restart: always
+    environment:
+      ADMINER_DESIGN: nette
     labels:
       - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
       - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
