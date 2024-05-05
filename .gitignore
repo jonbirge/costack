@@ -2,8 +2,8 @@
 *.json
 *DS_Store
 .env
+local.yml
 logs
 db
 certs
 www
-

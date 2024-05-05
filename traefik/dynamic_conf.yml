@@ -1,6 +1,6 @@
 # Traefik dynamic configuration
 
-http:
+http:     
   middlewares:
     usonly:
       plugin:
@@ -39,4 +39,3 @@ http:
             - TR
             - TH
             - ID
-            
