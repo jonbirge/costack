@@ -1,12 +1,11 @@
 # Traefik dynamic configuration
-
 http:     
   middlewares:
     usonly:
       plugin:
         geoblock:
           api: "https://get.geojs.io/v1/ip/country/{ip}"
-          cacheSize: 14
+          cacheSize: 8
           silentStartUp: false
           allowLocalRequests: true
           logLocalRequests: false
@@ -20,7 +19,7 @@ http:
       plugin:
         geoblock:
           api: "https://get.geojs.io/v1/ip/country/{ip}"
-          cacheSize: 14
+          cacheSize: 10
           silentStartUp: false
           allowLocalRequests: true
           logLocalRequests: false

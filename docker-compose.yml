@@ -6,7 +6,7 @@ services:
       - "--certificatesresolvers.stackresolver.acme.email=$EMAIL"
       - "--configFile=/etc/traefik.yml"
     labels:
-      - "traefik.http.routers.dashboard.rule=Host(`$HOSTNAME`) && PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.dashboard.rule=Host(`$HOSTNAME`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
       - "traefik.http.routers.dashboard.tls.certresolver=stackresolver"
       - "traefik.http.routers.dashboard.service=api@internal"
       - "traefik.http.middlewares.auth.basicauth.users=$ADMIN:$ADMIN_PASS"
@@ -15,8 +15,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./logs/:/logs/:rw
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./logs/:/logs/:rw
       - ./certs:/letsencrypt
       - ./traefik.yml:/etc/traefik.yml:ro
       - ./traefik:/etc/traefik
@@ -42,6 +42,8 @@ services:
       - /var/log/auth.log:/auth.log:ro
       - ./logs/access.log:/access.log:ro
       - ./logs/blacklist.csv:/blacklist.csv:rw
+      - ./logs/blacklist.yml:/blacklist.yml:rw
+      - ./traefik/blacklist.yml:/blacklist.yml:rw
       - ../logpager/src:/var/www:ro  # live development
     depends_on:
       - db
@@ -52,6 +54,7 @@ services:
     labels:
       - "traefik.http.routers.www.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
       - "traefik.http.routers.www.tls.certresolver=stackresolver"
+      - "traefik.http.routers.www.middlewares=blacklist@file"
     volumes:
       - ./www:/usr/share/nginx/html:rw
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
@@ -117,8 +120,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 60
+    command: --interval 120
 
 volumes:
   guac-config:
-

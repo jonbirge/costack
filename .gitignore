@@ -1,8 +1,7 @@
 *~
-*.json
 *DS_Store
 .env
-local.yml
+traefik/blacklist.yml
 logs
 db
 certs
