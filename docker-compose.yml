@@ -41,9 +41,8 @@ services:
     volumes:
       - /var/log/auth.log:/auth.log:ro
       - ./logs/access.log:/access.log:ro
-      - ./logs/blacklist.csv:/blacklist.csv:rw
-      - ./logs/blacklist.yml:/blacklist.yml:rw
       - ./traefik/blacklist.yml:/blacklist.yml:rw
+      - ./logs/blacklist.csv:/blacklist.csv:rw
       - ../logpager/src:/var/www:ro  # live development
     depends_on:
       - db
