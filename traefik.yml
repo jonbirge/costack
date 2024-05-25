@@ -32,6 +32,12 @@ certificatesResolvers:
       tlsChallenge: true
       httpChallenge:
         entryPoint: websecure
+  pubresolver:
+    acme:
+      storage: "/letsencrypt/acme_pub.json"
+      tlsChallenge: true
+      httpChallenge:
+        entryPoint: websecure
 
 experimental:
   plugins:

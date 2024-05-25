@@ -51,8 +51,8 @@ services:
     image: nginx
     restart: always
     labels:
-      - "traefik.http.routers.www.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
-      - "traefik.http.routers.www.tls.certresolver=stackresolver"
+      - "traefik.http.routers.www.rule=Host(`$PUB_HOSTNAME`) && PathPrefix(`/`)"
+      - "traefik.http.routers.www.tls.certresolver=pubresolver"
       - "traefik.http.routers.www.middlewares=blacklist@file"
     volumes:
       - ./www:/usr/share/nginx/html:rw
