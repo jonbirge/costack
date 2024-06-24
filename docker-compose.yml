@@ -41,7 +41,6 @@ services:
     volumes:
       - /var/log/auth.log:/auth.log:ro
       - ./logs/access.log:/access.log:ro
-      - ./traefik/blacklist.yml:/blacklist.yml:rw
       - ./logs/blacklist.csv:/blacklist.csv:rw
       - ../logpager/src:/var/www:ro  # live development
     depends_on:
@@ -53,7 +52,6 @@ services:
     labels:
       - "traefik.http.routers.www.rule=(Host(`$DOMAIN`) || Host(`www.$DOMAIN`)) && PathPrefix(`/`)"
       - "traefik.http.routers.www.tls.certresolver=pubresolver"
-      - "traefik.http.routers.www.middlewares=blacklist@file"
     volumes:
       - ./www:/usr/share/nginx/html:rw
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
