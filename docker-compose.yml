@@ -27,7 +27,7 @@ services:
       - www
 
   logpager:
-    image: jonbirge/logpager
+    image: ghcr.io/jonbirge/logpager:dev
     restart: always
     environment:
       SQL_HOST: db
