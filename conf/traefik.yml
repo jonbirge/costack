@@ -32,12 +32,15 @@ certificatesResolvers:
       tlsChallenge: true
       httpChallenge:
         entryPoint: websecure
+  pubresolver:
+    acme:
+      storage: "/letsencrypt/acme_pub.json"
+      tlsChallenge: true
+      httpChallenge:
+        entryPoint: websecure
 
 experimental:
   plugins:
     geoblock:
       modulename: github.com/PascalMinder/geoblock
       version: v0.2.7
-    denyip:
-      modulename: github.com/kevtainer/denyip
-      version: v1.0.0

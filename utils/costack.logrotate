@@ -1,0 +1,15 @@
+# template for using logrotate to rotate traefik logs
+# copy this to /etc/logrotate.d and modify as needed
+<path-to-costack>/logs/access.log
+{
+    rotate 7
+    maxsize 32M
+    compress
+    compresscmd /usr/bin/bzip2
+    compressext .bz2
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}
+
