@@ -40,7 +40,9 @@ services:
       - "traefik.http.routers.logpagerdev.middlewares=topten@file,striplogdev"
     volumes:
       - /var/log/auth.log:/auth.log:ro
+      - /var/log/auth.log.1:/auth.log.1:ro
       - ./logs/access.log:/access.log:ro
+      - ./logs/access.log.1:/access.log.1:ro
       - ./logs/blacklist.csv:/blacklist.csv:rw
       - ../logpager/src:/var/www:ro  # live development
     depends_on:
@@ -117,7 +119,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 120
+    command: --interval 3600
 
 volumes:
   guac-config:
