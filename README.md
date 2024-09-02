@@ -1,18 +1,17 @@
-# Company in a (Docker) Box
+# Server in a (Docker) Box
 
 ## About
 
 This repo is a docker-compose file and associated environment settings files
-that will allow you to instantly stand up a pretty decent company server,
-including public-facing web and file sharing, and a few back-end services for
-internal users, notably Guacamole for access to internal desktops and servers.
-A company of any significant size would probably want to split these things
-across multiple servers, but the goal here is to create something affordable to
-run on a single cloud server that will help a small seed-stage business provide
-a few resources.
+that will allow you to instantly stand up a decent company/personal server, 
+including:
 
-The intention is to keep the RAM requirements of this stack such that a 1 GB
-server instance can be reliably used.
+- Public-facing web site
+- Guacamole for access to internal desktops
+- Server log monitorin
+
+The goal here is to create something affordable to
+run on a single cloud server with low RAM requirements.
 
 Traefik is used to distribute traffic to the various backend services, as well
 as offer IP-based protection. The default configuration discards traffic from
