@@ -1,4 +1,4 @@
-# Company in a (Docker) Box
+# It's My Cloud in a Box
 
 ## About
 
@@ -30,12 +30,11 @@ the next section for work that still needs to be done.
 - LDAP server that is also used for auth
 - Internal landing page that authenticates internal users against LDAP
 - Mail server with SMTP and web-based back-end
-- Script to create the initial dB for Guacamole.
+- Script to create the initial dB for Guacamole
 - Implement as Digital Ocean custom droplet with automatic configuration
-- Add VPN server
-- Expand to use stacks/k8 to support scaling to multiple servers, if desired.
-  This would be especially useful for having a break between internal-use and
-  public-facing servers.
+- Default to using Docker volumes as storage, with sftp server for control
+- VPN server
+- Web interface for control of settings and enable/disable of components
 
 ## Installation
 

@@ -22,12 +22,11 @@ services:
       - ./conf/traefik/:/etc/traefik
     depends_on:
       - adminer
-      - logpager
       - guac
       - www
 
   logpager:
-    image: ghcr.io/jonbirge/logpager:latest
+    image: ghcr.io/jonbirge/logpager:dev
     restart: always
     environment:
       SQL_HOST: db
@@ -37,7 +36,7 @@ services:
       - "traefik.http.routers.logpager.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs`)"
       - "traefik.http.routers.logpager.tls.certresolver=stackresolver"
       - "traefik.http.middlewares.striplog.stripprefix.prefixes=/logs/"
-      - "traefik.http.routers.logpager.middlewares=topten@file,striplog"
+      - "traefik.http.routers.logpager.middlewares=striplog"
     volumes:
       - /var/log/auth.log:/auth.log:ro
       - /var/log/auth.log.1:/auth.log.1:ro
@@ -54,10 +53,10 @@ services:
       SQL_USER: sqluser
       SQL_PASS: $SQL_PASS
     labels:
-      - "traefik.http.routers.logpagerdev.rule=Host(`$HOSTNAME`) && PathPrefix(`/logpager`)"
+      - "traefik.http.routers.logpagerdev.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs-dev`)"
       - "traefik.http.routers.logpagerdev.tls.certresolver=stackresolver"
-      - "traefik.http.middlewares.striplogdev.stripprefix.prefixes=/logpager/"
-      - "traefik.http.routers.logpagerdev.middlewares=topten@file,striplogdev"
+      - "traefik.http.middlewares.striplogpager.stripprefix.prefixes=/logs-dev/"
+      - "traefik.http.routers.logpagerdev.middlewares=topten@file,auth,striplogpager"
     volumes:
       - /var/log/auth.log:/auth.log:ro
       - /var/log/auth.log.1:/auth.log.1:ro
@@ -68,12 +67,27 @@ services:
     depends_on:
       - db
 
+# Uncomment for public-facing web server
+#  www:
+#    image: nginx
+#    restart: always
+#    labels:
+#      - "traefik.http.routers.www.rule=(Host(`$DOMAIN`) || Host(`www.$DOMAIN`)) && PathPrefix(`/`)"
+#      - "traefik.http.routers.www.tls.certresolver=pubresolver"
+#      - "traefik.http.routers.www.middlewares=topten@file"
+#    volumes:
+#      - ./www:/usr/share/nginx/html:rw
+#      - ./conf/nginx.conf:/etc/nginx/nginx.conf:ro
+#    depends_on:
+#      - php
+
   www:
     image: nginx
     restart: always
     labels:
-      - "traefik.http.routers.www.rule=(Host(`$DOMAIN`) || Host(`www.$DOMAIN`)) && PathPrefix(`/`)"
-      - "traefik.http.routers.www.tls.certresolver=pubresolver"
+      - "traefik.http.routers.www.rule=Host(`$HOSTNAME`) && PathPrefix(`/`)"
+      - "traefik.http.routers.www.tls.certresolver=stackresolver"
+      - "traefik.http.routers.www.middlewares=topten@file,auth"
     volumes:
       - ./www:/usr/share/nginx/html:rw
       - ./conf/nginx.conf:/etc/nginx/nginx.conf:ro
