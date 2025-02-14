@@ -32,9 +32,9 @@ certificatesResolvers:
       tlsChallenge: true
       httpChallenge:
         entryPoint: websecure
-  pubresolver:
+  teslaresolver:
     acme:
-      storage: "/letsencrypt/acme_pub.json"
+      storage: "/letsencrypt/acme_tesla.json"
       tlsChallenge: true
       httpChallenge:
         entryPoint: websecure

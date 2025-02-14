@@ -1,6 +1,27 @@
 # Traefik dynamic configuration
 http:     
+  routers:
+    cockpit:
+      entryPoints:
+        - websecure
+      rule: "Host(`nyc.birgefuller.com`) && PathPrefix(`/cockpit`)"
+      service: cockpit
+      tls:
+        certResolver: stackresolver
+      middlewares:
+        - strip-cockpit
+
+  services:
+    cockpit:
+      loadBalancer:
+        servers:
+          - url: "http://localhost:9090/" # Adjust URL if necessary
+
   middlewares:
+    strip-cockpit:
+      stripPrefix:
+        prefixes:
+          - "/cockpit/"
     usonly:
       plugin:
         geoblock:
@@ -15,7 +36,7 @@ http:
           blackListMode: false
           countries:
             - US
-    blockten:
+    topten:
       plugin:
         geoblock:
           api: "https://get.geojs.io/v1/ip/country/{ip}"

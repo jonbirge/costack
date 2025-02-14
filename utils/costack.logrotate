@@ -3,7 +3,7 @@
 <path-to-costack>/logs/access.log
 {
     rotate 7
-    maxsize 32M
+    maxsize 16M
     compress
     compresscmd /usr/bin/bzip2
     compressext .bz2
