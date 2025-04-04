@@ -38,9 +38,9 @@ services:
       - "traefik.http.routers.logpager.middlewares=striplog"
     volumes:
       - /var/log/auth.log:/auth.log:ro
-      - /var/log/auth.log.1:/auth.log.1:ro
+      #- /var/log/auth.log.1:/auth.log.1:ro
       - ./logs/access.log:/access.log:ro
-      - ./logs/access.log.1:/access.log.1:ro
+      #- ./logs/access.log.1:/access.log.1:ro
     depends_on:
       - db
 
@@ -64,6 +64,10 @@ services:
     restart: always
     volumes:
       - ./www:/usr/share/nginx/html:rw
+    environment:
+      SQL_HOST: db
+      SQL_USER: sqluser
+      SQL_PASS: $SQL_PASS
  
   db:
     image: mysql
@@ -94,18 +98,18 @@ services:
   #   depends_on:
   #     - db
 
-  # adminer:
-  #   image: adminer
-  #   restart: always
-  #   environment:
-  #     ADMINER_DESIGN: nette
-  #   labels:
-  #     - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
-  #     - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
-  #     - "traefik.port=8080"
-  #     - "traefik.http.routers.adminer.middlewares=usonly@file"
-  #   depends_on:
-  #     - db
+  adminer:
+    image: adminer
+    restart: always
+    environment:
+      ADMINER_DESIGN: nette
+    labels:
+      - "traefik.http.routers.adminer.rule=Host(`$HOSTNAME`) && PathPrefix(`/adminer`)"
+      - "traefik.http.routers.adminer.tls.certresolver=stackresolver"
+      - "traefik.port=8080"
+      - "traefik.http.routers.adminer.middlewares=usonly@file"
+    depends_on:
+      - db
 
   guac:
     image: guacamole/guacamole
@@ -132,12 +136,12 @@ services:
     image: guacamole/guacd
     restart: always
 
-  watchtower:
-    image: containrrr/watchtower
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 3600
+  # watchtower:
+  #   image: containrrr/watchtower
+  #   restart: always
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   command: --interval 3600
 
 volumes:
   guac-config:
