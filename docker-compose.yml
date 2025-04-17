@@ -29,7 +29,7 @@ services:
     restart: always
     environment:
       SQL_HOST: db
-      SQL_USER: sqluser
+      SQL_USER: $SQL_USER
       SQL_PASS: $SQL_PASS
     labels:
       - "traefik.http.routers.logpager.rule=Host(`$HOSTNAME`) && PathPrefix(`/logs`)"
@@ -40,7 +40,7 @@ services:
       - /var/log/auth.log:/auth.log:ro
       #- /var/log/auth.log.1:/auth.log.1:ro
       - ./logs/access.log:/access.log:ro
-      #- ./logs/access.log.1:/access.log.1:ro
+      - ./logs/access.log.1:/access.log.1:ro
     depends_on:
       - db
 
@@ -60,24 +60,30 @@ services:
       - php
 
   php:
-    image: bitnami/php-fpm
     restart: always
+    build:
+      context: .
+      dockerfile: php-dockerfile.yml
+    ports:
+      - ":9000"
     volumes:
       - ./www:/usr/share/nginx/html:rw
     environment:
-      SQL_HOST: db
-      SQL_USER: sqluser
+      SQL_USER: $SQL_USER
       SQL_PASS: $SQL_PASS
- 
+      SQL_HOST: db
+    depends_on:
+      - db
+
   db:
     image: mysql
     restart: always
     volumes:
       - ./db:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: $SQL_ROOT_PASS
-      MYSQL_USER: sqluser
+      MYSQL_USER: $SQL_USER
       MYSQL_PASSWORD: $SQL_PASS
+      MYSQL_ROOT_PASSWORD: $SQL_ROOT_PASS
 
   # logpager-dev:
   #   image: ghcr.io/jonbirge/logpager:dev
