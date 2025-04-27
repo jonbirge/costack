@@ -1,10 +1,10 @@
 # Dockerfile
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
 # Install only what's needed for MySQL extensions and Composer
 RUN apt-get update && apt-get install -y \
-    unzip \
     git \
+    unzip \
     libzip-dev \
     && rm -rf /var/lib/apt/lists/*
 

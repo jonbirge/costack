@@ -21,7 +21,6 @@ services:
       - ./conf/traefik.yml:/etc/traefik.yml:ro
       - ./conf/traefik/:/etc/traefik
     depends_on:
-      - guac
       - www
 
   logpager:
@@ -118,30 +117,30 @@ services:
     depends_on:
       - db
 
-  guac:
-    image: guacamole/guacamole
-    restart: always
-    volumes:
-      - guac-config:/config
-    environment:
-      TOTP_ENABLED: "true"
-      MYSQL_HOSTNAME: db
-      MYSQL_DATABASE: guacamole_db
-      MYSQL_USER: sqluser
-      MYSQL_PASSWORD: $SQL_PASS
-      GUACAMOLE_HOME: /config
-      GUACD_HOSTNAME: guacd
-    labels:
-      - "traefik.http.routers.guacamole.rule=Host(`$HOSTNAME`) && PathPrefix(`/guacamole`)"
-      - "traefik.http.routers.guacamole.tls.certresolver=stackresolver"
-      - "traefik.http.routers.guacamole.middlewares=blockten@file"
-    depends_on:
-      - db
-      - guacd
+  # guac:
+  #   image: guacamole/guacamole
+  #   restart: always
+  #   volumes:
+  #     - guac-config:/config
+  #   environment:
+  #     TOTP_ENABLED: "true"
+  #     MYSQL_HOSTNAME: db
+  #     MYSQL_DATABASE: guacamole_db
+  #     MYSQL_USER: sqluser
+  #     MYSQL_PASSWORD: $SQL_PASS
+  #     GUACAMOLE_HOME: /config
+  #     GUACD_HOSTNAME: guacd
+  #   labels:
+  #     - "traefik.http.routers.guacamole.rule=Host(`$HOSTNAME`) && PathPrefix(`/guacamole`)"
+  #     - "traefik.http.routers.guacamole.tls.certresolver=stackresolver"
+  #     - "traefik.http.routers.guacamole.middlewares=blockten@file"
+  #   depends_on:
+  #     - db
+  #     - guacd
 
-  guacd:
-    image: guacamole/guacd
-    restart: always
+  # guacd:
+  #   image: guacamole/guacd
+  #   restart: always
 
   # watchtower:
   #   image: containrrr/watchtower
